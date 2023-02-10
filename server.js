@@ -31,26 +31,7 @@ mongoose.connect("mongodb+srv://ckyeung59:23258454Ha@cluster0.x983ogu.mongodb.ne
 
 //-----------------------------------------------------
 
-// Classes and roles
-
-// const roleList = [
-//     {role: "admin"},
-//     {role: "user"}
-// ]
-
-// initialize classes
-// for (const cl of allClass) {
-//     classes.findOne({ classname: cl.classname }).lean().exec().then((result, err) => {
-//         if (!result) {
-//             classes.create(cl)
-//         }
-//     }).catch(error => {
-//         console.log(error)
-//     })
-// }
-
 //fetch all class from db
-
 async function getClass(){
     var allClass = await classes.find({}).lean()
     var classList = []
@@ -60,36 +41,6 @@ async function getClass(){
     }
     return classList
 }
-
-//-----------------------------------------------------
-//initial roles
-// for(const r of roleList){
-//     roles.findOne({role: r.role}).lean().exec().then((res, err) => {
-//         if(!res){
-//             roles.create(r)
-//         }
-//     }).catch(error => {
-//         console.log(error)
-//     })
-// }
-//signup a admin
-//  users.findOne({email: "247@247.com"}).lean().exec().then(async (res, err) =>{
-//     if(!res){
-//         //create a empty doc for user
-//         const doc = await carts.create({})
-//         const pw = bcrypt.hashSync("admin", 10)
-//         const token = jwt.sign({ email: "247@247.com"}, "SECRET", { expiresIn: 3600 });
-//         users.create({
-//             password: pw,
-//             email: "247@247.com",
-//             role: "admin",
-//             token: token,
-//             cartid: doc._id
-//         }).catch(err => {
-//             console.log(err)
-//         })
-//     }
-// })
 
 async function createAdmin(){
     const res = await users.findOne({ email: "247@247.com" })
@@ -137,15 +88,19 @@ app.get("/schedule", checkLogin, async (req, res) => {
 app.get("/cart", checkLogin, async (req, res) => {
 
     if (req.email) {
+        const cartList = []
         const itemNum = await carts.findOne({buyerm: req.email}).lean()
-        // for(const i of itemNum.cart){
-
-        // }
+        const vip = await users.findOne({email: req.email}).lean()
         if(itemNum.cart.length > 0){
-            res.render("cart", { layout: "skeleton", login: true, cartItem: itemNum.cart })
+            for(const i of itemNum.cart){
+                const itemPay = await classes.findById(i.itemid).lean()
+                cartList.push({classname:itemPay.classname, instructor:itemPay.instructor, 
+                                duration:itemPay.duration, cartNum:i._id.toHexString(), buyer: vip.email})
+            }
+            res.render("cart", { layout: "skeleton", login: true, hasItem: true, cartItem: cartList, vip: vip.monPass})
         }
         else{
-            res.render("cart", { layout: "skeleton", login: true, cartItem: "No Item in the shopping cart" })
+            res.render("cart", { layout: "skeleton", login: true, hasItem: false })
         }
     }
     else {
