@@ -1,6 +1,7 @@
 const { Router } = require("express")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
+const mongoose = require("mongoose")
 const alert = require("alert")
 const { checkLogin } = require("./auth.js")
 const { users, roles, classes, carts, payments } = require("../models/dbSchema.js")
@@ -48,7 +49,6 @@ router.post("/signup", async (req, res) => {
             }
         })
     } catch (error) {
-        // res.status(400).json({ error })
         res.send(error)
     }
 
@@ -87,37 +87,16 @@ router.post("/login", async (req, res) => {
 
 
 router.post("/monps", checkLogin, async (req, res) => {
-    // console.log(req.email)
     try {
         if (req.email) {
             await users.findOne({ email: req.email }).lean().exec().then(async (result, err) => {
                 if (result) {
-                    // console.log(result)
                     //update user monthly plan to true
                     await users.updateOne({ email: req.email }, { $set: { monPass: true } }).lean().exec()
                     //add 75$ to payments
                     let a = await payments.create({
                         item: "monthly plan"
                     })
-                    // console.log(a._id)
-
-                    // await classes.findOne({classname: "MonthlyPlan"}).lean().exec().then(async (ress, eerr) =>{
-                    //     console.log(ress._id)
-                    //     const update = {item:"MonthlyPlan", itemid: ress._id}
-                    //     await carts.findOne({buyerm: result.email}).lean().exec().then(async (r,e)=>{
-                    //         if(!r){
-                    //             await carts.create({
-                    //                 buyerid: result._id,
-                    //                 buyerm: result.email,
-                    //                 cart: update
-                    //             })
-                    //         }
-                    //         // else{
-                    //         //     await carts.updateOne({ _id: r._id }, { $push: { cart: update } }).lean().exec()
-
-                    //         // }
-                    //     })
-                    // })
                     res.status(301).redirect("/schedule")
                 }
             })
@@ -136,7 +115,7 @@ router.get("/logout", (req, res) => {
     res.status(301).redirect("/")
 })
 
-router.post("/cart", checkLogin, async (req, res) => {
+router.post("/toCart", checkLogin, async (req, res) => {
     try {
         if (req.email) {
             //user logined do something
@@ -164,7 +143,7 @@ router.post("/cart", checkLogin, async (req, res) => {
         }
         else {
             //no one login do something
-            res.send("Please Login To Book Your Purchase")
+            res.send("Please Login To Book the Course")
         }
     } catch (error) {
         res.send(error)
@@ -173,20 +152,25 @@ router.post("/cart", checkLogin, async (req, res) => {
 
 router.post("/payment", checkLogin, async (req, res) => {
     try {
+        console.log(req.body)
         if (req.email) {
             const user = await users.findOne({ email: req.email }).lean()
             // console.log(user)
             const ct = await carts.findOne({ buyerid: user._id })
             if (ct.cart.length > 0) {
+                const paymentNum = (Math.random() * 100000000).toFixed(0)
+                cartItem = []
                 for (const i of ct.cart) {
-                    const update = {
-                        itemid: i.itemid,
-                        item: i.item,
-                        cxid: user._id,
-                        cxm: user.email
-                    }
-                    await payments.create(update)
+                    cartItem.push({item: i.item, itemid: i.itemid})
                 }
+                const update = {
+                    cxm: user.email,
+                    cxid: user._id,
+                    paymentNum: paymentNum,
+                    paidList: cartItem
+                    }
+                //add payment to db
+                await payments.create(update)
                 // clear shopping cart
                 ct.cart = []
                 await ct.save()
@@ -201,6 +185,15 @@ router.post("/payment", checkLogin, async (req, res) => {
     } catch (error) {
         res.send(error)
     }
+})
+
+router.post("/remove", async(req, res) => {
+    const bKey = Object.keys(req.body)
+    const stringToId = new mongoose.Types.ObjectId.createFromHexString(req.body[bKey])
+    const cartOwner = await carts.findOneAndUpdate({buyerm:bKey}, 
+                                                    {$pull:{cart:{_id:stringToId}}},
+                                                    {new:true}).lean()
+    res.redirect("/cart")
 })
 
 module.exports = router

@@ -58,30 +58,27 @@ const userSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "cartSchema"
     }
-    // spend: [{
-    //     type: Number,
-    //     default: 0
-    // }]
 });
 
 const paymentSchema = mongoose.Schema({
-    itemid:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "classSchema"
-    },
-    item:{
-        type: String
-    },
-    cxid:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "userid"
-    },
     cxm:{
         type: String
     },
+    cxid:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref: "userid"
+    },
+    paidList:[{
+        item: String,
+        itemid:{type: mongoose.Schema.Types.ObjectId, 
+                ref: "classSchema"}
+    }],
     date:{
         type: Date,
-        default: Date.now 
+        default: Date.now
+    },
+    paymentNum:{
+        type: Number
     }
 })
 
@@ -105,6 +102,6 @@ users = mongoose.model("users", userSchema)
 roles = mongoose.model("roles", roleSchema)
 classes = mongoose.model("classes", classSchema)
 carts = mongoose.model("carts", cartSchema)
-payments = mongoose.model("paym", paymentSchema)
+payments = mongoose.model("payms", paymentSchema)
 
 module.exports = { users, roles, classes, carts, payments }

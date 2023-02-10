@@ -4,7 +4,7 @@
     -webkit-filter: blur(5px);
 }
 
-div{
+#payform-div{
     position:absolute;
     text-align: center;
     background-color: rgba(0, 255, 255, 0.412);
@@ -15,7 +15,7 @@ div{
 }
 
 
-#bln{
+#blnc{
     padding: 5px 8px 5px 8px;
     background-color: rgb(50, 50, 222);
     color: white;

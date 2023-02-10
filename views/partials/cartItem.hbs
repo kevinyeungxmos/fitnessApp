@@ -1,0 +1,15 @@
+<link rel="stylesheet" href="/css/cartItem.css" />
+{{#if vip}}
+    <p>You have Monthly Pass</p>
+{{/if}}
+{{#each cartItem}}
+    <div id="cartwrapper">
+        <h2>{{this.classname}}</h2>
+        <p>Instructor: {{this.instructor}}</p>
+        <p>min: {{this.duration}}</p>
+    </div>
+    <form action="/user/remove" method="post" id="cartPayForm">
+        <input type="hidden" name="{{this.buyer}}" value="{{this.cartNum}}">
+        <button id="blnpf">Remove</button>
+    </form>
+{{/each}}

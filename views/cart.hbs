@@ -2,10 +2,14 @@
 <section>
     <div id="payform-div">
         {{> cartItem}}
-        <form action="/user/payment" method="post" id="payform">
-            <button id="bln" >PAY</button>
-            {{!-- <button id="bsu" type="submit" formaction="/user/signup" formmethod="post">Create Account</button> --}}
-        </form>
+        {{#if hasItem}}
+            <form action="/user/payment" method="post" id="payform">
+                <button id="blnc" >PAY</button>
+                {{!-- <button id="bsu" type="submit" formaction="/user/signup" formmethod="post">Create Account</button> --}}
+            </form>
+        {{else}}
+            <p>No Item in Shopping Cart</p>
+        {{/if}}
     </div>
 
 </section>
