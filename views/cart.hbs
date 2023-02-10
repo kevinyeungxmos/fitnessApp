@@ -1,0 +1,11 @@
+<link rel="stylesheet" href="/css/cart.css" />
+<section>
+    <div id="payform-div">
+        {{> cartItem}}
+        <form action="/user/payment" method="post" id="payform">
+            <button id="bln" >PAY</button>
+            {{!-- <button id="bsu" type="submit" formaction="/user/signup" formmethod="post">Create Account</button> --}}
+        </form>
+    </div>
+
+</section>

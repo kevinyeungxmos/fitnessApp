@@ -1,0 +1,15 @@
+#classArticle{
+    color:white;
+    text-align: center;
+}
+
+#classDiv1{
+    border: 3px solid white;
+    margin-top:10px;
+    display: flex;
+    width: 500px;
+    margin-right: auto;
+    margin-left: auto;
+    height: 170px;
+}
+

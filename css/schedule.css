@@ -1,0 +1,15 @@
+#scheduleH1{
+    color:white;
+    text-align: center;
+}
+
+#hmpic {
+    width: 100%;
+    filter: blur(5px);
+    -webkit-filter: blur(5px);
+}
+
+#scheduleP{
+    color:white;
+    text-align: center;
+}

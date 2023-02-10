@@ -1,0 +1,14 @@
+main{
+    position: relative;
+}
+/* #hmpic {
+    width: 100%;
+} */
+
+main div {
+    position: absolute;
+    text-align: center;
+    color: white;
+    top: 15%;
+    width: 50%;
+}

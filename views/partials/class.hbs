@@ -1,0 +1,16 @@
+<link rel="stylesheet" href="/css/class.css" />
+<article id="classArticle">
+    <div id="classDiv1">
+        <div>
+        <p>Photo: {{photo}}</p>
+        </div>
+        <div>
+        <h2 id="className">{{classname}}</h2>
+        <p>with: {{instructor}}</p>
+        <p>Duration: {{duration}}</p>
+        <form action="/user/cart" method="post">
+                <input type="submit" value="Book Now" name="{{classname}}">
+        </form>
+        </div>
+    </div>
+</article>

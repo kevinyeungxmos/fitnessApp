@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>24/7 Fitness</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lobster&family=Lora:wght@700&family=Noto+Serif:ital,wght@1,700&family=Roboto:wght@300&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/skeleton.css" />
+</head>
+
+<body>
+    <header>
+        <h1 onclick="">24/7Fitness</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/admin">Admin</a></li>
+                <li><a href="/schedule">Schedule</a></li>
+                <li><a href="/cart">cart</a></li>
+                {{#if login}}
+                    <li><a href="/user/logout">Logout</a></li>
+                {{else}}
+                    <li><a href="/user">Login</a></li>
+                {{/if}}
+            </ul>
+        </nav>
+    </header>
+    <main>
+    <img src="/assets/homepic.jpeg" alt="" id="hmpic">
+    {{{body}}}
+    {{#each listOfClass}}
+    {{> class this}}
+    {{/each}}
+    </main>
+    <footer>© 2023 24/7 Fitness</footer>
+
+    <script type="text/javascript" src="skeleton.js"></script>
+
+</body>
+
+</html>
