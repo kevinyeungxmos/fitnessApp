@@ -1,14 +1,19 @@
 <link rel="stylesheet" href="/css/cart.css" />
 <section>
     <div id="payform-div">
-        {{> cartItem}}
         {{#if hasItem}}
-            <form action="/user/payment" method="post" id="payform">
-                <button id="blnc" >PAY</button>
-                {{!-- <button id="bsu" type="submit" formaction="/user/signup" formmethod="post">Create Account</button> --}}
-            </form>
+        <div id="cxdetails">
+            <h3>Customer Details</h3>
+            <input type="text" placeholder="Enter Your Name" class="cxinput">
+            <br>
+            <input type="text" value="{{buyer}}" class="cxinput">
+        </div>
+        {{> cartItem}}
+        <form action="/user/payment" method="post" id="payform">
+            <button id="blnc">PAY</button>
+        </form>
         {{else}}
-            <p>No Item in Shopping Cart</p>
+        <p>No Item in Shopping Cart</p>
         {{/if}}
     </div>
 

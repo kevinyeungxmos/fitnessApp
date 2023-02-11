@@ -97,7 +97,8 @@ app.get("/cart", checkLogin, async (req, res) => {
                 cartList.push({classname:itemPay.classname, instructor:itemPay.instructor, 
                                 duration:itemPay.duration, cartNum:i._id.toHexString(), buyer: vip.email})
             }
-            res.render("cart", { layout: "skeleton", login: true, hasItem: true, cartItem: cartList, vip: vip.monPass})
+            res.render("cart", { layout: "skeleton", login: true, hasItem: true, cartItem: cartList,
+                                 vip: vip.monPass, buyer: vip.email})
         }
         else{
             res.render("cart", { layout: "skeleton", login: true, hasItem: false })

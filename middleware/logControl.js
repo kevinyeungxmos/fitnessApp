@@ -94,8 +94,12 @@ router.post("/monps", checkLogin, async (req, res) => {
                     //update user monthly plan to true
                     await users.updateOne({ email: req.email }, { $set: { monPass: true } }).lean().exec()
                     //add 75$ to payments
+                    const paymentNum = (Math.random() * 100000000).toFixed(0)
                     let a = await payments.create({
-                        item: "monthly plan"
+                        cxm: req.email,
+                        cxid: result._id,
+                        paidList: [{item:"monthly plan"}],
+                        paymentNum: paymentNum
                     })
                     res.status(301).redirect("/schedule")
                 }
@@ -119,8 +123,6 @@ router.post("/toCart", checkLogin, async (req, res) => {
     try {
         if (req.email) {
             //user logined do something
-            // console.log(req.email)
-            // console.log(req.body)
             let clm = Object.keys(req.body)
             await users.findOne({ email: req.email }).lean().exec().then(async (user, err) => {
                 if (user) {
@@ -174,14 +176,13 @@ router.post("/payment", checkLogin, async (req, res) => {
                 // clear shopping cart
                 ct.cart = []
                 await ct.save()
-                // console.log(ct.cart)
+                res.render("message", { layout: "skeleton" , msg:"Payment Success", cnNum: paymentNum})
             }
             else{
                 console.log("No Item in Shopping Cart")
             }
             
         }
-        res.render("payment", { layout: "skeleton" })
     } catch (error) {
         res.send(error)
     }
@@ -189,7 +190,7 @@ router.post("/payment", checkLogin, async (req, res) => {
 
 router.post("/remove", async(req, res) => {
     const bKey = Object.keys(req.body)
-    const stringToId = new mongoose.Types.ObjectId.createFromHexString(req.body[bKey])
+    const stringToId = new mongoose.mongo.ObjectId.createFromHexString(req.body[bKey])
     const cartOwner = await carts.findOneAndUpdate({buyerm:bKey}, 
                                                     {$pull:{cart:{_id:stringToId}}},
                                                     {new:true}).lean()
