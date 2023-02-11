@@ -1,0 +1,13 @@
+<h1>All Purchases</h1>
+<form action="/user/sorting" method="post">
+    <label for="sorting">Sorting by:</label>
+    <select id="sort" name="sort">
+        <option value="Ascending">Ascending</option>
+        <option value="descending">Descending</option>
+    </select>
+    <input type="submit">
+</form>
+{{>transactions}}
+<p>-----------------------------------------------------------------------------------------------------------</p>
+<p>Earned: ${{this.earning}} </p>
+<p>-----------------------------------------------------------------------------------------------------------</p>

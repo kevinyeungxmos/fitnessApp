@@ -98,8 +98,9 @@ router.post("/monps", checkLogin, async (req, res) => {
                     let a = await payments.create({
                         cxm: req.email,
                         cxid: result._id,
-                        paidList: [{item:"monthly plan"}],
-                        paymentNum: paymentNum
+                        paidList: [{ item: "monthly plan" }],
+                        paymentNum: paymentNum,
+                        total: 75
                     })
                     res.status(301).redirect("/schedule")
                 }
@@ -154,7 +155,8 @@ router.post("/toCart", checkLogin, async (req, res) => {
 
 router.post("/payment", checkLogin, async (req, res) => {
     try {
-        console.log(req.body)
+        // console.log(req.body)
+        const total = parseFloat(req.body.total)
         if (req.email) {
             const user = await users.findOne({ email: req.email }).lean()
             // console.log(user)
@@ -163,38 +165,79 @@ router.post("/payment", checkLogin, async (req, res) => {
                 const paymentNum = (Math.random() * 100000000).toFixed(0)
                 cartItem = []
                 for (const i of ct.cart) {
-                    cartItem.push({item: i.item, itemid: i.itemid})
+                    cartItem.push({ item: i.item, itemid: i.itemid })
                 }
                 const update = {
+                    cxname: req.body.cxname,
                     cxm: user.email,
                     cxid: user._id,
                     paymentNum: paymentNum,
-                    paidList: cartItem
-                    }
+                    paidList: cartItem,
+                    total: total
+                }
                 //add payment to db
                 await payments.create(update)
                 // clear shopping cart
                 ct.cart = []
                 await ct.save()
-                res.render("message", { layout: "skeleton" , msg:"Payment Success", cnNum: paymentNum})
+                res.render("message", { layout: "skeleton", login: true, msg: ` Payment Success! Confirmation Number: ${paymentNum}` })
             }
-            else{
-                console.log("No Item in Shopping Cart")
+            else {
+                res.render("message", { layout: "skeleton", login: true, msg: "Error: No Item in Shopping Cart" })
             }
-            
+
         }
     } catch (error) {
         res.send(error)
     }
 })
 
-router.post("/remove", async(req, res) => {
+router.post("/remove", async (req, res) => {
     const bKey = Object.keys(req.body)
     const stringToId = new mongoose.mongo.ObjectId.createFromHexString(req.body[bKey])
-    const cartOwner = await carts.findOneAndUpdate({buyerm:bKey}, 
-                                                    {$pull:{cart:{_id:stringToId}}},
-                                                    {new:true}).lean()
+    const cartOwner = await carts.findOneAndUpdate({ buyerm: bKey },
+        { $pull: { cart: { _id: stringToId } } },
+        { new: true }).lean()
     res.redirect("/cart")
+})
+
+router.post("/sorting", checkLogin, async (req, res) => {
+    console.log(req.body)
+    if (req.email) {
+        const admin = await users.findOne({ email: req.email }).lean()
+        if (admin.role !== "admin") {
+            res.render("message", { layout: "skeleton", login: true, msg: "Error: Authorization needed. Please login as admin user" })
+        }
+        else {
+            const earning = await payments.aggregate([{ $group: { _id: null, Amount: { $sum: "$total" } } }])
+            var sort = -1
+            if (req.body.sort === "Ascending"){
+                sort = 1
+            }
+            var allReceipt = await payments.aggregate([{ $match: { _id: { $exists: true } } }, { $sort: { cxm: sort } }])
+            var listOfReceipt = []
+            for (const i of allReceipt) {
+                const cl = []
+                for (const c of i.paidList) {
+                    cl.push(c.item)
+                }
+                listOfReceipt.push({
+                    name: i.cxname,
+                    email: i.cxm,
+                    id: (i.cxid).toHexString(),
+                    no: i.paymentNum,
+                    date: i.date,
+                    total: i.total,
+                    class: cl
+                })
+            }
+            console.log("you login successfully")
+            res.render("admin", { layout: "skeleton", login: true, allList: listOfReceipt, earning: earning[0].Amount })
+
+        }
+    } else {
+        res.render("message", { layout: "skeleton", login: false, msg: "Error: Authentication needed. Please login as admin user" })
+    }
 })
 
 module.exports = router

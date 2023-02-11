@@ -21,6 +21,10 @@ const classSchema = mongoose.Schema({
         type: Number,
         required: false
     },
+    price:{
+        type: Number,
+        default: 0.75
+    },
     photo: {
         type: String,
         required: true
@@ -56,17 +60,20 @@ const userSchema = mongoose.Schema({
     },
     cartid:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "cartSchema"
+        ref: "carts"
     }
 });
 
 const paymentSchema = mongoose.Schema({
+    cxname:{
+        type: String
+    },
     cxm:{
         type: String
     },
     cxid:{
         type:mongoose.Schema.Types.ObjectId,
-        ref: "userid"
+        ref: "users"
     },
     paidList:[{
         item: String,
@@ -79,13 +86,16 @@ const paymentSchema = mongoose.Schema({
     },
     paymentNum:{
         type: Number
+    },
+    total:{
+        type: Number
     }
 })
 
 const cartSchema = mongoose.Schema({
     buyerid:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "userid"
+        ref: "users"
     },
     buyerm:{
         type: String
@@ -93,7 +103,7 @@ const cartSchema = mongoose.Schema({
     cart:[{
         item:{type: String},
         itemid: {type: mongoose.Schema.Types.ObjectId,
-                ref: "classSchema"}
+                ref: "classes"}
     }]
 })
 
