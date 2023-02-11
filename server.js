@@ -64,6 +64,29 @@ async function createAdmin(){
     }
 }
 
+async function CountAmount(email){
+    const result = await carts.aggregate([{$match:{buyerm:email} },{$unwind:"$cart"},{$lookup:{
+        from:"classes",
+        localField: "cart.itemid",
+        foreignField: "_id",
+        as: "bookedClass"}},{$set:{"cart.itemid": "$bookedClass"}}, {$project:{cart:1, buyerm:1}}, {$unwind:"$cart.itemid"},
+        {$group:{_id:"$buyerm", amount:{ $sum: {$multiply:["$cart.itemid.price", "$cart.itemid.duration"]}}, count:{$sum:1}}}])
+
+    const subTotal = result[0].amount
+    const tax = subTotal * 0.13
+    const total = subTotal * 1.13
+    const calc = {
+                subTotal:subTotal.toFixed(2),
+                buyer:result[0]._id,
+                itemCount:result[0].count,
+                tax:tax.toFixed(2),
+                total: total.toFixed(2)}
+    // console.log(calc)
+    return calc
+
+}
+
+
 //-----------------------------------------------------
 
 app.get("/", checkLogin, (req, res) => {
@@ -86,26 +109,69 @@ app.get("/schedule", checkLogin, async (req, res) => {
 })
 
 app.get("/cart", checkLogin, async (req, res) => {
-
     if (req.email) {
         const cartList = []
         const itemNum = await carts.findOne({buyerm: req.email}).lean()
         const vip = await users.findOne({email: req.email}).lean()
         if(itemNum.cart.length > 0){
+            var result = await CountAmount(req.email)
             for(const i of itemNum.cart){
                 const itemPay = await classes.findById(i.itemid).lean()
                 cartList.push({classname:itemPay.classname, instructor:itemPay.instructor, 
                                 duration:itemPay.duration, cartNum:i._id.toHexString(), buyer: vip.email})
             }
-            res.render("cart", { layout: "skeleton", login: true, hasItem: true, cartItem: cartList,
-                                 vip: vip.monPass, buyer: vip.email})
+            if(vip.monPass){
+                result.subTotal = 0
+                result.tax = 0
+                result.total = 0
+                res.render("cart", { layout: "skeleton", login: true, hasItem: true, cartItem: cartList,
+                                 vip: vip.monPass, buyer: vip.email, calresult: result})
+            }
+            else{
+                res.render("cart", { layout: "skeleton", login: true, hasItem: true, cartItem: cartList,
+                                 vip: vip.monPass, buyer: vip.email, calresult: result})
+            }
         }
         else{
-            res.render("cart", { layout: "skeleton", login: true, hasItem: false })
+            res.render("message", { layout: "skeleton", login: true, hasItem: false, msg:"Error: No Item in Shopping Cart" })
         }
     }
     else {
-        res.render("cart", { layout: "skeleton", login: false })
+        res.render("message", { layout: "skeleton", login: false, msg:"Error: Please Login to Process Payment" })
+    }
+})
+
+app.get("/admin", checkLogin, async (req,res)=>{
+    if(req.email){
+        const admin = await users.findOne({email: req.email}).lean()
+        if(admin.role !== "admin"){
+            res.render("message", { layout: "skeleton", login: true, msg:"Error: Authorization needed. Please login as admin user" })
+        }
+        else{
+            const earning = await payments.aggregate([{$group: {_id: null, Amount: {$sum:"$total"}}}]) 
+            var allReceipt = await payments.aggregate([{$match: {_id:{$exists:true}}}])
+            var listOfReceipt = []
+            for(const i of allReceipt){
+                const cl = []
+                for(const c of i.paidList){
+                    cl.push(c.item)
+                }
+                listOfReceipt.push({
+                    name:i.cxname,
+                    email: i.cxm,
+                    id: (i.cxid).toHexString(),
+                    no: i.paymentNum,
+                    date: i.date,
+                    total: i.total,
+                    class: cl
+                })
+            }
+            console.log("you login successfully")
+            res.render("admin", { layout: "skeleton", login: true, allList: listOfReceipt, earning: earning[0].Amount})
+            
+        }
+    }else{
+        res.render("message", { layout: "skeleton", login: false, msg:"Error: Authentication needed. Please login as admin user" })
     }
 })
 

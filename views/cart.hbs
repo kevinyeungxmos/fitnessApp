@@ -4,14 +4,22 @@
         {{#if hasItem}}
         <div id="cxdetails">
             <h3>Customer Details</h3>
-            <input type="text" placeholder="Enter Your Name" class="cxinput">
-            <br>
-            <input type="text" value="{{buyer}}" class="cxinput">
+            <form action="/user/payment" method="post" id="payform">
+                <input type="text" placeholder="Enter Your Name" class="cxinput" name="cxname" required>
+                <br>
+                <input type="text" value="{{buyer}}" class="cxinput" name="email">
+                <input type="hidden" value="{{calresult.total}}" name="total">
+            </form>
         </div>
         {{> cartItem}}
-        <form action="/user/payment" method="post" id="payform">
-            <button id="blnc">PAY</button>
-        </form>
+        <p>-----------------------------------------------------------------------------------------------------------</p>
+        <p>Course amount: <span>{{calresult.itemCount}}</span></p>
+        <p>Subtotal: <span>{{calresult.subTotal}}</span></p>
+        <p>Tax: <span>{{calresult.tax}}</span></p>
+        <p>-----------------------------------------------------------------------------------------------------------</p>
+        <p>Total: <span>{{calresult.total}}</span></p>
+        <p>-----------------------------------------------------------------------------------------------------------</p>
+        <input type="submit" form="payform" value="PAY" id="blnc" />
         {{else}}
         <p>No Item in Shopping Cart</p>
         {{/if}}
