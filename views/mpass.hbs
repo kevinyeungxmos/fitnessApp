@@ -1,11 +1,21 @@
 <link rel="stylesheet" href="/css/mpass.css" />
 <section>
     <div>
+        <h3>Sign up a Monthly Plan?</h3>
+        <p>* Only $75 for every course</p>
         <form action="/user/monps" method="post">
-            <h3>Sign up a Monthly Plan?</h3>
-            <p>* Only $75 for every course</p>
+            <input type="hidden" name="password" value="{{userDetail.password}}">
+            <input type="hidden" name="email" value="{{userDetail.email}}">
+            <input type="hidden" name="role" value="{{userDetail.role}}">
+            <input type="hidden" name="token" value="{{userDetail.token}}">
             <button id="yes" type="submit">Yes</button>
-            <button id="no" type="submit" formaction="/schedule" formmethod="get">No</button>
+        </form>
+        <form action="/user/nomonpsignin" method="post">
+            <input type="hidden" name="password" value="{{userDetail.password}}">
+            <input type="hidden" name="email" value="{{userDetail.email}}">
+            <input type="hidden" name="role" value="{{userDetail.role}}">
+            <input type="hidden" name="token" value="{{userDetail.token}}">
+            <button id="no" type="submit">No</button>
         </form>
     </div>
 </section>
