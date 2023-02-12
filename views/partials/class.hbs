@@ -2,15 +2,15 @@
 <article id="classArticle">
     <div id="classDiv1">
         <div>
-        <p>Photo: {{photo}}</p>
+            <img id="classImg" src="/assets/{{photo}}"/>
         </div>
-        <div>
-        <h2 id="className">{{classname}}</h2>
-        <p>with: {{instructor}}</p>
-        <p>Duration: {{duration}}</p>
-        <form action="/user/toCart" method="post">
-                <input type="submit" value="Book Now" name="{{classname}}">
-        </form>
+        <div id="classDiv3">
+            <h2 id="className">{{classname}}</h2>
+            <p>Instructor: {{instructor}}</p>
+            <p>Duration: {{duration}} mins</p>
+            <form action="/user/toCart" method="post">
+                <input id="bookButton" type="submit" value="Book Now" name="{{classname}}">
+            </form>
         </div>
     </div>
 </article>

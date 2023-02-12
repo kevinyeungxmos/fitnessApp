@@ -1,21 +1,25 @@
 <link rel="stylesheet" href="/css/cartItem.css" />
 {{#if vip}}
-    <div>
-        <p> <span style="color: yellow; font-size: 15px;">&#9733</span>Monthly Pass Member</p>
-    </div>
+<div>
+    <p class="showVip"> <span style="color: yellow; font-size: 15px;">&#9733</span>Monthly Pass Member</p>
+</div>
 {{else}}
-    <div>
-        <p> <span style="color: black; font-size: 15px;">&#9733</span> Member</p>
-    </div>
+<div>
+    <p class="showVip"> <span style="color: black; font-size: 15px;">&#9733</span> Not Monthly Pass Member</p>
+</div>
 {{/if}}
 {{#each cartItem}}
+<div id="cartItemDiv">
     <div id="cartwrapper">
         <h2>{{this.classname}}</h2>
         <p>Instructor: {{this.instructor}}</p>
-        <p>min: {{this.duration}}</p>
+        <p>Minutes: {{this.duration}}</p>
     </div>
-    <form action="/user/remove" method="post" id="cartPayForm">
-        <input type="hidden" name="{{this.buyer}}" value="{{this.cartNum}}">
-        <button id="blnpf">Remove</button>
-    </form>
+    <div id="cartItemButton">
+        <form action="/user/remove" method="post" id="cartPayForm">
+            <input type="hidden" name="{{this.buyer}}" value="{{this.cartNum}}">
+            <button id="blnpf">Remove</button>
+        </form>
+    </div>
+</div>
 {{/each}}

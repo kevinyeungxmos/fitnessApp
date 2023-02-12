@@ -64,6 +64,7 @@ async function createAdmin(){
     }
 }
 
+//use db aggregation to calculate
 async function CountAmount(email){
     const result = await carts.aggregate([{$match:{buyerm:email} },{$unwind:"$cart"},{$lookup:{
         from:"classes",
@@ -81,7 +82,6 @@ async function CountAmount(email){
                 itemCount:result[0].count,
                 tax:tax.toFixed(2),
                 total: total.toFixed(2)}
-    // console.log(calc)
     return calc
 
 }
@@ -109,6 +109,7 @@ app.get("/schedule", checkLogin, async (req, res) => {
 })
 
 app.get("/cart", checkLogin, async (req, res) => {
+    
     if (req.email) {
         const cartList = []
         const itemNum = await carts.findOne({buyerm: req.email}).lean()
@@ -133,11 +134,13 @@ app.get("/cart", checkLogin, async (req, res) => {
             }
         }
         else{
-            res.render("message", { layout: "skeleton", login: true, hasItem: false, msg:"Error: No Item in Shopping Cart" })
+            res.render("cart", { layout: "skeleton", login: true, hasItem: false, cartItem: cartList,
+                                 vip: vip.monPass, buyer: vip.email, calresult: result})
         }
     }
     else {
-        res.render("message", { layout: "skeleton", login: false, msg:"Error: Please Login to Process Payment" })
+        // res.render("message", { layout: "skeleton", login: false, msg:"Error", err:"Please Login to Process Payment"})
+        res.render("cart", { layout: "skeleton", login: false, hasItem: false})
     }
 })
 
@@ -145,7 +148,7 @@ app.get("/admin", checkLogin, async (req,res)=>{
     if(req.email){
         const admin = await users.findOne({email: req.email}).lean()
         if(admin.role !== "admin"){
-            res.render("message", { layout: "skeleton", login: true, msg:"Error: Authorization needed. Please login as admin user" })
+            res.render("message", { layout: "skeleton", login: true, msg:"Error", err:"Authorization needed. Please login as admin user" })
         }
         else{
             const earning = await payments.aggregate([{$group: {_id: null, Amount: {$sum:"$total"}}}]) 
@@ -166,12 +169,11 @@ app.get("/admin", checkLogin, async (req,res)=>{
                     class: cl
                 })
             }
-            console.log("you login successfully")
-            res.render("admin", { layout: "skeleton", login: true, allList: listOfReceipt, earning: earning[0].Amount})
+            res.render("admin", { layout: "skeleton", login: true, allList: listOfReceipt, earning: (earning[0].Amount.toFixed(2))})
             
         }
     }else{
-        res.render("message", { layout: "skeleton", login: false, msg:"Error: Authentication needed. Please login as admin user" })
+        res.render("message", { layout: "skeleton", login: false, msg:"Error", err: "Authentication needed. Please login as admin user"})
     }
 })
 

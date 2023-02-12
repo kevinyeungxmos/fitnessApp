@@ -39,13 +39,6 @@ const userSchema = mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: [true, "email already existed"],
-        validate: {
-            validator: function (v) {
-                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-            },
-            message: '{VALUE} is not a valid email!'
-        }
     },
     role: {
         type: String,

@@ -1,14 +1,26 @@
 main{
     position: relative;
 }
-/* #hmpic {
-    width: 100%;
-} */
+
 
 main div {
     position: absolute;
     text-align: center;
     color: white;
-    top: 15%;
-    width: 50%;
+    top: 30%;
+    left: 15%;
+    width: 350px;
+    font-family: 'Lora', serif;
+}
+
+#checkItOutButton{
+    background-color: grey;
+    color: white;
+    border: none;
+    width:100px;
+    height:30px;
+    border-radius: 15px;
+    font-weight: bold;
+    font-family: 'Lora', serif;
+    cursor:pointer;
 }

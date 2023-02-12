@@ -4,14 +4,25 @@
     -webkit-filter: blur(5px);
 }
 
+#cd{
+    color: white;
+}
+
 #payform-div{
     position:absolute;
     text-align: center;
-    background-color: rgba(0, 255, 255, 0.412);
-    width:50%;
-    height: 100%;
+    background-color: rgba(87, 87, 87, 0.9);
+    width:700px;
+    /* height: 100%;
     top: 20%;
-    left: 25%;
+    left: 25%; */
+    /* z-index: 99; */
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    top:15%;
+    border-radius: 20px;
 }
 
 #cxdetails{
@@ -27,7 +38,24 @@
 }
 
 #blnc{
-    padding: 5px 8px 5px 8px;
-    background-color: rgb(50, 50, 222);
+    background-color: rgb(65, 65, 65);
+    color: rgb(255, 255, 255);
+    border: none;
+    width:100px;
+    height:30px;
+    border-radius: 15px;
+    font-weight: bold;
+    font-family: 'Lora', serif;
+    cursor:pointer;
+}
+
+.totalDiv{
+    text-align: right;
+    margin-right: 70px;
     color: white;
+    /* right: 50px; */
+}
+
+#totalP{
+    font-weight: bold;
 }
