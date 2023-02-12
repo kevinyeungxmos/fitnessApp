@@ -1,3 +1,9 @@
+#hmpic {
+    width: 100%;
+    filter: blur(15px);
+    -webkit-filter: blur(15px);
+}
+
 td, th{
     border: 1px solid black;
 }

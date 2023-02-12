@@ -64,6 +64,7 @@ async function createAdmin(){
     }
 }
 
+//use db aggregation to calculate
 async function CountAmount(email){
     const result = await carts.aggregate([{$match:{buyerm:email} },{$unwind:"$cart"},{$lookup:{
         from:"classes",
@@ -109,6 +110,7 @@ app.get("/schedule", checkLogin, async (req, res) => {
 })
 
 app.get("/cart", checkLogin, async (req, res) => {
+    
     if (req.email) {
         const cartList = []
         const itemNum = await carts.findOne({buyerm: req.email}).lean()
@@ -133,11 +135,13 @@ app.get("/cart", checkLogin, async (req, res) => {
             }
         }
         else{
-            res.render("message", { layout: "skeleton", login: true, hasItem: false, msg:"Error", err:"No Item in Shopping Cart" })
+            res.render("cart", { layout: "skeleton", login: true, hasItem: false, cartItem: cartList,
+                                 vip: vip.monPass, buyer: vip.email, calresult: result})
         }
     }
     else {
-        res.render("message", { layout: "skeleton", login: false, msg:"Error", err:":Please Login to Process Payment"})
+        // res.render("message", { layout: "skeleton", login: false, msg:"Error", err:"Please Login to Process Payment"})
+        res.render("cart", { layout: "skeleton", login: false, hasItem: false})
     }
 })
 
@@ -166,8 +170,7 @@ app.get("/admin", checkLogin, async (req,res)=>{
                     class: cl
                 })
             }
-            console.log("you login successfully")
-            res.render("admin", { layout: "skeleton", login: true, allList: listOfReceipt, earning: earning[0].Amount})
+            res.render("admin", { layout: "skeleton", login: true, allList: listOfReceipt, earning: (earning[0].Amount.toFixed(2))})
             
         }
     }else{

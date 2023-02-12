@@ -12,11 +12,21 @@ router.get("/", (req, res) => {
     res.render("login", { layout: "skeleton" })
 })
 
+function valid(email){
+    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return email.match(pattern)
+}
+
 router.post("/signup", async (req, res) => {
     try {
         await users.findOne({ email: req.body.email }).lean().exec().then(async (result, err) => {
             if (!result) {
                 if (req.body.password) {
+                    //validate email
+                    if(!valid(req.body.email)){
+                        res.render("message", { layout: "skeleton", err: "Invalid Email", msg: "Error" })
+                        return
+                    }
                     //create a empty doc for user
                     const doc = await carts.create({})
                     req.body.password = bcrypt.hashSync(req.body.password, 10)
@@ -27,11 +37,6 @@ router.post("/signup", async (req, res) => {
                         role: "user",
                         token: token,
                         cartid: doc._id
-                    }).catch(err => {
-                        console.log(err.errors.email.properties.message)
-                        const errMsg = err.errors.email.properties.message
-                        // res.send(errMsg)
-                        res.render("message", { layout: "skeleton", err: "something wrong", msg: "Error" })
                     })
                     doc.buyerid = new_user._id
                     doc.buyerm = new_user.email
@@ -39,9 +44,9 @@ router.post("/signup", async (req, res) => {
                     res.cookie("token", token, {
                         httpOnly: true,
                     })
-                    res.render("mpass", { layout: "skeleton", data: "successfully login" })
+                    res.render("mpass", { layout: "skeleton"})
                 } else {
-                    res.render("message", { layout: "skeleton", err: "password is required", msg:"Error" })
+                    res.render("message", { layout: "skeleton", err: "Password is required", msg:"Error" })
                 }
             }
             else {
@@ -135,19 +140,16 @@ router.post("/toCart", checkLogin, async (req, res) => {
                             res.redirect("/schedule")
                         }
                         else {
-                            res.send("Error: class not found")
+                            res.render("message", { layout: "skeleton", login: true, err: "class not found", msg: "Error" })
                         }
                     })
-                } else {
-                    res.send("Error: user not found")
                 }
             })
 
         }
         else {
             //no one login do something
-            // res.send("Please Login To Book the Course")
-            res.render("bookbutlogout", { layout: "skeleton" })
+            res.render("message", { layout: "skeleton", login: false, err: "You need to login before booking classes.", msg: "Error" })     
         }
     } catch (error) {
         res.send(error)
