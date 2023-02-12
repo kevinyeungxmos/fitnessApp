@@ -1,0 +1,16 @@
+#adminSection{
+    position:absolute;
+    text-align: center;
+    background-color: rgb(143, 143, 143);
+    /* width:700px; */
+    /* height: 100%;
+    top: 20%;
+    left: 25%; */
+    /* z-index: 99; */
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    top:15%;
+    border-radius: 20px;
+}
