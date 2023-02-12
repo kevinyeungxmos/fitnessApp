@@ -82,7 +82,6 @@ async function CountAmount(email){
                 itemCount:result[0].count,
                 tax:tax.toFixed(2),
                 total: total.toFixed(2)}
-    // console.log(calc)
     return calc
 
 }
