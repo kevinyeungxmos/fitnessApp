@@ -1,37 +1,51 @@
 #hmpic {
     width: 100%;
-    /* filter: blur(5px);
-    -webkit-filter: blur(5px); */
+    filter: blur(15px);
+    -webkit-filter: blur(15px);
 }
 
 div{
     position:absolute;
     text-align: center;
-    background-color: aqua;
-    width:20%;
-    height: 25%;
-    transform: translateX(210%) translateY(-360%);
+    background-color: rgb(191, 191, 191);
+    width:500px;
+    /* height: 100%;
+    top: 20%;
+    left: 25%; */
+    /* z-index: 99; */
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    top:15%;
+    border-radius: 20px;
+    height: 150px;
 }
 
 h2 {
     margin-top: 10px;
 }
 
-/* input{
-    margin-top: 0px;
-    margin-bottom: 2px;
-} */
-
-/* #bln{
+#yes{
     padding: 5px 8px 5px 8px;
-    background-color: rgb(50, 50, 222);
+    background-color: rgb(45, 45, 45);
     color: white;
-    transform: translateX(-110%) ;
+    margin-top: 10px;
+    border-radius: 30px;
+    border-style: none;
+    width: 130px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
-#bsu{
+#no{
     padding: 5px 8px 5px 8px;
-    background-color: orange;
-    color: rgb(28, 12, 12);
-    transform: translateX(27%) translateY(-100%);
-} */
+    background-color: rgb(74, 74, 74);
+    color: white;
+    margin-top: 10px;
+    border-radius: 30px;
+    border-style: none;
+    width: 130px;
+    font-weight: bold;
+    cursor: pointer;
+}

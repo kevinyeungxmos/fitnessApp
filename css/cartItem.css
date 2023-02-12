@@ -1,0 +1,31 @@
+#cartItemDiv {
+    display: flex;
+    /* border: 3px solid pink; */
+    justify-content: space-between;
+    margin-top:10px;
+    border-radius: 15px;
+    background-color: rgb(216, 216, 216);
+}
+
+#cartwrapper {
+    text-align: left;
+    padding-left: 10px;
+    color: black;
+}
+
+/* #cartItemButton {
+    border: 1px solid blue;
+} */
+
+#blnpf {
+    width: 100px;
+    height: 40px;
+    border-radius: 100px;
+    border-style: none;
+    cursor: pointer;
+    margin-top:40%;
+    margin-right: 20px;
+    font-weight: bold;
+    background-color: rgb(102, 102, 102);
+    color: rgb(224, 224, 224);
+}

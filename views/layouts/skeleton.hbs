@@ -22,21 +22,21 @@
                 <li><a href="/">Home</a></li>
                 <li><a href="/admin">Admin</a></li>
                 <li><a href="/schedule">Schedule</a></li>
-                <li><a href="/cart">cart</a></li>
+                <li><a href="/cart">Cart</a></li>
                 {{#if login}}
-                    <li><a href="/user/logout">Logout</a></li>
+                <li><a href="/user/logout">Logout</a></li>
                 {{else}}
-                    <li><a href="/user">Login</a></li>
+                <li><a href="/user">Login</a></li>
                 {{/if}}
             </ul>
         </nav>
     </header>
     <main>
-    <img src="/assets/homepic.jpeg" alt="" id="hmpic">
-    {{{body}}}
-    {{#each listOfClass}}
-    {{> class this}}
-    {{/each}}
+        <img src="/assets/homepic.jpeg" alt="" id="hmpic">
+        {{{body}}}
+        {{#each listOfClass}}
+        {{> class this}}
+        {{/each}}
     </main>
     <footer>© 2023 24/7 Fitness</footer>
 

@@ -41,11 +41,11 @@ router.post("/signup", async (req, res) => {
                     })
                     res.render("mpass", { layout: "skeleton", data: "successfully login" })
                 } else {
-                    res.render("error", { layout: "skeleton", err: "password is required" })
+                    res.render("errornopassword", { layout: "skeleton", err: "password is required" })
                 }
             }
             else {
-                res.render("error", { layout: "skeleton", err: "email exist" })
+                res.render("erroraccexist", { layout: "skeleton", err: "email exist" })
             }
         })
     } catch (error) {
@@ -146,7 +146,8 @@ router.post("/toCart", checkLogin, async (req, res) => {
         }
         else {
             //no one login do something
-            res.send("Please Login To Book the Course")
+            // res.send("Please Login To Book the Course")
+            res.render("bookbutlogout", { layout: "skeleton" })
         }
     } catch (error) {
         res.send(error)

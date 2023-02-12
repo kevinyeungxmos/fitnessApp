@@ -1,15 +1,47 @@
-#classArticle{
-    color:white;
-    text-align: center;
+#classArticle {
+    color: white;
+    position: relative;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    top: -500px;
 }
 
-#classDiv1{
-    border: 3px solid white;
-    margin-top:10px;
+#className {
+    font-family: 'Lora', serif;
+}
+
+#classDiv3 {
+    padding-left: 40px;
+}
+
+#classDiv1 {
+    border: 1px solid rgb(58, 57, 57);
+    margin-top: 10px;
     display: flex;
-    width: 500px;
+    width: 700px;
     margin-right: auto;
     margin-left: auto;
     height: 170px;
+    border-radius: 50px;
+    background-color:rgb(236, 236, 236,0.1);
 }
 
+#bookButton {
+    background-color: grey;
+    color: white;
+    border: none;
+    width: 100px;
+    height: 25px;
+    border-radius: 15px;
+    font-weight: bold;
+    font-family: 'Lora', serif;
+    cursor: pointer;
+}
+
+#classImg {
+    width: 300px;
+    height: 170px;
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
+}

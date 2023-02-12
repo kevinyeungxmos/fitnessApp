@@ -13,11 +13,15 @@
         </div>
         {{> cartItem}}
         <p>-----------------------------------------------------------------------------------------------------------</p>
+        <div class="totalDiv">
         <p>Course amount: <span>{{calresult.itemCount}}</span></p>
-        <p>Subtotal: <span>{{calresult.subTotal}}</span></p>
-        <p>Tax: <span>{{calresult.tax}}</span></p>
+        <p>Subtotal: $<span>{{calresult.subTotal}}</span></p>
+        <p>Tax: $<span>{{calresult.tax}}</span></p>
+        </div>
         <p>-----------------------------------------------------------------------------------------------------------</p>
-        <p>Total: <span>{{calresult.total}}</span></p>
+        <div class="totalDiv">
+        <p id="totalP">Total: $<span>{{calresult.total}}</span></p>
+        </div>
         <p>-----------------------------------------------------------------------------------------------------------</p>
         <input type="submit" form="payform" value="PAY" id="blnc" />
         {{else}}

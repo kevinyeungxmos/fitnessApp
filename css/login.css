@@ -4,33 +4,49 @@
     -webkit-filter: blur(5px);
 }
 
-div{
+#log-div{
     position:absolute;
     text-align: center;
-    background-color: aqua;
-    width:20%;
-    height: 25%;
-    top: 35%;
-    left: 41%;
+    background-color: rgb(155, 155, 155);
+    width:300px;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    top:25%;
+    border-radius: 20px;
+    height: 150px;
 }
 
 h2 {
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
 input{
     margin-top: 0px;
     margin-bottom: 2px;
+    width: 200px;
 }
 
 #bln{
     padding: 5px 8px 5px 8px;
-    background-color: rgb(50, 50, 222);
+    background-color: rgb(65, 65, 65);
     color: white;
+    margin-top: 10px;
+    border-radius: 30px;
+    border-style: none;
+    width: 130px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 #bsu{
     padding: 5px 8px 5px 8px;
-    background-color: orange;
-    color: rgb(28, 12, 12);
+    background-color: rgb(65, 65, 65);
+    color:white;
+    border-radius: 30px;
+    border-style: none;
+    width: 130px;
+    font-weight: bold;
+    cursor: pointer;
 }
