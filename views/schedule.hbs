@@ -2,5 +2,8 @@
 <section id="scheduleSection">
 <h1 id="scheduleH1">Our Classes</h1>
 <p id="scheduleP">Let us help you find a class that meets your fitness goals.</p>
+{{#each listOfClass}}
+{{> class this}}
+{{/each}}
 </br>
 </section>

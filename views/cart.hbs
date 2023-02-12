@@ -3,7 +3,7 @@
     <div id="payform-div">
         {{#if hasItem}}
         <div id="cxdetails">
-            <h3>Customer Details</h3>
+            <h3 id="cd">Customer Details</h3>
             <form action="/user/payment" method="post" id="payform">
                 <input type="text" placeholder="Enter Your Name" class="cxinput" name="cxname" required>
                 <br>
@@ -25,7 +25,7 @@
         <p>-----------------------------------------------------------------------------------------------------------</p>
         <input type="submit" form="payform" value="PAY" id="blnc" />
         {{else}}
-        <p>No Item in Shopping Cart</p>
+        <p style="color: white">No Item in Shopping Cart</p>
         {{/if}}
     </div>
 

@@ -2,9 +2,8 @@
     color: white;
     position: relative;
     margin: 0 auto;
-    left: 0;
-    right: 0;
-    top: -500px;
+    padding-top: 10px;
+    margin-left: -20%;
 }
 
 #className {
