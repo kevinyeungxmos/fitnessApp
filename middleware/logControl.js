@@ -74,7 +74,7 @@ router.post("/login", async (req, res) => {
                     res.cookie("token", token, {
                         httpOnly: true,
                     })
-                    res.status(301).redirect("/schedule")
+                    res.redirect("/schedule")
                 } else {
                     res.render("message", { layout: "skeleton", err: "Wrong Password", msg: "Error" })
                 }
