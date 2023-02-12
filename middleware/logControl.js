@@ -31,7 +31,7 @@ router.post("/signup", async (req, res) => {
                         console.log(err.errors.email.properties.message)
                         const errMsg = err.errors.email.properties.message
                         // res.send(errMsg)
-                        res.render("error", { layout: "skeleton", err: errMsg })
+                        res.render("message", { layout: "skeleton", err: "something wrong", msg: "Error" })
                     })
                     doc.buyerid = new_user._id
                     doc.buyerm = new_user.email
@@ -41,11 +41,11 @@ router.post("/signup", async (req, res) => {
                     })
                     res.render("mpass", { layout: "skeleton", data: "successfully login" })
                 } else {
-                    res.render("errornopassword", { layout: "skeleton", err: "password is required" })
+                    res.render("message", { layout: "skeleton", err: "password is required", msg:"Error" })
                 }
             }
             else {
-                res.render("erroraccexist", { layout: "skeleton", err: "email exist" })
+                res.render("message", { layout: "skeleton", err: "Eamil already exists", msg:"Error" })
             }
         })
     } catch (error) {
@@ -71,10 +71,10 @@ router.post("/login", async (req, res) => {
                     })
                     res.status(301).redirect("/schedule")
                 } else {
-                    res.send("wrong pw")
+                    res.render("message", { layout: "skeleton", err: "Wrong Password", msg: "Error" })
                 }
             } else {
-                res.send("User doesn't exist");
+                res.render("message", { layout: "skeleton", err: "User doesn't exist", msg: "Error" })
             }
         })
             .catch((err) => {
@@ -110,13 +110,13 @@ router.post("/monps", checkLogin, async (req, res) => {
             res.send("error");
         }
     } catch (error) {
-        res.send(error)
+        console.log(error)
     }
 })
 
 router.get("/logout", (req, res) => {
     res.clearCookie("token")
-    alert("Logout Sucessfully!")
+    // alert("Logout Sucessfully!")
     res.status(301).redirect("/")
 })
 
@@ -232,7 +232,6 @@ router.post("/sorting", checkLogin, async (req, res) => {
                     class: cl
                 })
             }
-            console.log("you login successfully")
             res.render("admin", { layout: "skeleton", login: true, allList: listOfReceipt, earning: earning[0].Amount })
 
         }

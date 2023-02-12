@@ -16,7 +16,7 @@
 
 <body>
     <header>
-        <h1 onclick="">24/7Fitness</h1>
+        <h1 onclick="returnHome()">24/7Fitness</h1>
         <nav>
             <ul>
                 <li><a href="/">Home</a></li>
@@ -34,13 +34,10 @@
     <main>
         <img src="/assets/homepic.jpeg" alt="" id="hmpic">
         {{{body}}}
-        {{#each listOfClass}}
-        {{> class this}}
-        {{/each}}
     </main>
     <footer>© 2023 24/7 Fitness</footer>
 
-    <script type="text/javascript" src="skeleton.js"></script>
+    <script type="text/javascript" src="/js/skeleton.js"></script>
 
 </body>
 

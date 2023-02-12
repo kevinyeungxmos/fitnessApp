@@ -1,5 +1,4 @@
 #scheduleH1 {
-    color: black;
     text-align: center;
     font-weight: bold;
 }
@@ -11,7 +10,6 @@
 }
 
 #scheduleP {
-    color: black;
     text-align: center;
     font-weight: bold;
 }
@@ -23,7 +21,8 @@
     left: 0;
     right: 0;
     top: 100px;
-    background-color: rgb(128, 128, 128,0.2);
+    background-color: rgba(33, 33, 33, 0.744);
     height: 100px;
     border-radius: 100px;
+    color: white;
 }

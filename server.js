@@ -133,11 +133,11 @@ app.get("/cart", checkLogin, async (req, res) => {
             }
         }
         else{
-            res.render("message", { layout: "skeleton", login: true, hasItem: false, msg:"Error: No Item in Shopping Cart" })
+            res.render("message", { layout: "skeleton", login: true, hasItem: false, msg:"Error", err:"No Item in Shopping Cart" })
         }
     }
     else {
-        res.render("message", { layout: "skeleton", login: false, msg:"Error: Please Login to Process Payment" })
+        res.render("message", { layout: "skeleton", login: false, msg:"Error", err:":Please Login to Process Payment"})
     }
 })
 
@@ -145,7 +145,7 @@ app.get("/admin", checkLogin, async (req,res)=>{
     if(req.email){
         const admin = await users.findOne({email: req.email}).lean()
         if(admin.role !== "admin"){
-            res.render("message", { layout: "skeleton", login: true, msg:"Error: Authorization needed. Please login as admin user" })
+            res.render("message", { layout: "skeleton", login: true, msg:"Error", err:"Authorization needed. Please login as admin user" })
         }
         else{
             const earning = await payments.aggregate([{$group: {_id: null, Amount: {$sum:"$total"}}}]) 
@@ -171,7 +171,7 @@ app.get("/admin", checkLogin, async (req,res)=>{
             
         }
     }else{
-        res.render("message", { layout: "skeleton", login: false, msg:"Error: Authentication needed. Please login as admin user" })
+        res.render("message", { layout: "skeleton", login: false, msg:"Error", err: "Authentication needed. Please login as admin user"})
     }
 })
 
