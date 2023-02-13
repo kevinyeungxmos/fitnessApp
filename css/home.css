@@ -23,4 +23,9 @@ main div {
     font-weight: bold;
     font-family: 'Lora', serif;
     cursor:pointer;
+    transition: 0.3s ease-out ;
+}
+
+#checkItOutButton:hover{
+    background-color: rgb(61, 61, 61);
 }
