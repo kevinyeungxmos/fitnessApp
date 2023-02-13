@@ -4,7 +4,8 @@ const exphbs = require("express-handlebars")
 const cookieParser = require("cookie-parser")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcryptjs")
-const userRouter = require("./middleware/logControl.js")
+const session = require("express-session")
+const userRouter = require("./route/control.js")
 const { checkLogin } = require("./middleware/auth.js")
 const { users, roles, classes, carts, payments } = require("./models/dbSchema.js")
 const app = express()
@@ -16,7 +17,13 @@ app.engine(".hbs", exphbs.engine({
     helpers: {
         json: (context) => { return JSON.stringify(context) }
     }
-}));
+}))
+
+app.use(session({
+    secret: "the quick brown fox jumped over the lazy dog 1234567890",  // random string, used for configuring the session
+    resave: false,
+    saveUninitialized: true
+ })) 
 
 app.use(express.static(__dirname))
 app.use(express.urlencoded({ extended: true }))
