@@ -36,6 +36,11 @@
     font-weight: bold;
     font-family: 'Lora', serif;
     cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+#bookButton:hover{
+    transform: scale(1.1);
 }
 
 #classImg {
