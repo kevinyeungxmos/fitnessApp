@@ -38,6 +38,11 @@ input{
     width: 130px;
     font-weight: bold;
     cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+#bln:hover{
+    transform: scale(1.05);
 }
 
 #bsu{
@@ -49,4 +54,9 @@ input{
     width: 130px;
     font-weight: bold;
     cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+#bsu:hover{
+    transform: scale(1.05);
 }
