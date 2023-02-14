@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const mongoose = require("mongoose")
 const alert = require("alert")
-const { checkLogin } = require("./auth.js")
+const { checkLogin } = require("../middleware/auth.js")
 const { users, roles, classes, carts, payments } = require("../models/dbSchema.js")
 
 const router = Router()
@@ -26,31 +26,16 @@ router.post("/signup", async (req, res) => {
         await users.findOne({ email: req.body.email }).lean().exec().then(async (result, err) => {
             if (!result) {
                 if (req.body.password) {
-                    //validate email
-                    //create a empty doc for user
-                    // const doc = await carts.create({})
                     req.body.password = bcrypt.hashSync(req.body.password, 10)
                     const token = jwt.sign({ email: req.body.email }, "SECRET", { expiresIn: 3600 });
-                    // let new_user = await users.create({
-                    //     password: req.body.password,
-                    //     email: req.body.email,
-                    //     role: "user",
-                    //     token: token,
-                    //     cartid: doc._id
-                    // })
-                    // doc.buyerid = new_user._id
-                    // doc.buyerm = new_user.email
-                    // await doc.save()
-                    var user_detail = {
+                    let user_detail = {
                         password: req.body.password,
                         email: req.body.email,
                         role: "user",
                         token: token
                     }
-                    // res.cookie("token", token, {
-                    //     httpOnly: true,
-                    // })
-                    res.render("mpass", { layout: "skeleton", userDetail: user_detail })
+                    req.session.userDetail = user_detail
+                    res.render("mpass", { layout: "skeleton" })
                 } else {
                     res.render("message", { layout: "skeleton", err: "Password is required", msg: "Error" })
                 }
@@ -105,10 +90,10 @@ router.post("/monps", async (req, res) => {
     try {
         const doc = await carts.create({})
         let new_user = await users.create({
-            password: req.body.password,
-            email: req.body.email,
-            role: req.body.role,
-            token: req.body.token,
+            password: req.session.userDetail.password,
+            email: req.session.userDetail.email,
+            role: req.session.userDetail.role,
+            token: req.session.userDetail.token,
             cartid: doc._id,
             monPass: true
         })
@@ -121,7 +106,7 @@ router.post("/monps", async (req, res) => {
         //add 75$ to payments
         const paymentNum = (Math.random() * 100000000).toFixed(0)
         let a = await payments.create({
-            cxm: req.body.email,
+            cxm: req.session.userDetail.email,
             cxid: new_user._id,
             paidList: [{ item: "monthly plan" }],
             paymentNum: paymentNum,
@@ -138,10 +123,10 @@ router.post("/nomonpsignin", async(req, res) => {
     try {
         const doc = await carts.create({})
         let new_user = await users.create({
-            password: req.body.password,
-            email: req.body.email,
-            role: req.body.role,
-            token: req.body.token,
+            password: req.session.userDetail.password,
+            email:req.session.userDetail.email,
+            role: req.session.userDetail.role,
+            token: req.session.userDetail.token,
             cartid: doc._id,
             monPass: false
         })
@@ -159,7 +144,9 @@ router.post("/nomonpsignin", async(req, res) => {
 
 router.get("/logout", (req, res) => {
     res.clearCookie("token")
+    req.session.destroy()
     res.status(301).redirect("/")
+
 })
 
 router.post("/toCart", checkLogin, async (req, res) => {

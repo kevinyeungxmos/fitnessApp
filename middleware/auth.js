@@ -10,7 +10,6 @@ const checkLogin = (req, res, next) => {
         const payload = jwt.verify(token, "SECRET");
         if (payload) {
             req.email = payload.email;
-            console.log(req.email)
             return next();
         } else {
             return next()

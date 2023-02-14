@@ -18,6 +18,20 @@
     height: 150px;
 }
 
-#goToClassButton{
-    text-decoration: none;
+#goBack{
+    background-color: rgb(202, 202, 202);
+    color: rgb(94, 92, 92);
+    border: none;
+    width:100px;
+    height:30px;
+    border-radius: 15px;
+    font-weight: bold;
+    font-family: 'Lora', serif;
+    cursor:pointer;
+    transition: 0.3s ease-out ;
+}
+
+#goBack:hover{
+    background-color: rgb(54, 54, 54);
+    color: rgb(199, 199, 199);
 }
