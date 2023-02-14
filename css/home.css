@@ -3,14 +3,18 @@ main{
 }
 
 
-main div {
+#homeDiv{
     position: absolute;
     text-align: center;
     color: white;
     top: 30%;
     left: 15%;
     width: 350px;
+    height: 180px;
     font-family: 'Lora', serif;
+    border-radius: 20px;
+    background-color: rgba(97, 97, 97, 0.653);
+    transition: 0.6s ease-out;
 }
 
 #checkItOutButton{
@@ -23,4 +27,36 @@ main div {
     font-weight: bold;
     font-family: 'Lora', serif;
     cursor:pointer;
+}
+
+#checkItOutButton::after{
+    content: "Check it out";
+    transition: 1s, opacity 0.2s;
+}
+
+#checkItOutButton:hover::after{
+    opacity: 0;
+}
+
+#checkItOutButton::before{
+    content: "Check it out";
+    top: 135px;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    opacity: 0;
+    color: white;
+    transform: translate(-5%, 0);
+    transition: 0.5s, opacity 0.2s ease-out;
+}
+
+#checkItOutButton:hover::before{
+    opacity: 1;
+    transform: translate(0, 0);
+    transition-delay: 0.1s;
+}
+
+#checkItOutButton:hover{
+    background-color: rgb(61, 61, 61);
 }

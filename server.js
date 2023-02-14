@@ -4,7 +4,8 @@ const exphbs = require("express-handlebars")
 const cookieParser = require("cookie-parser")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcryptjs")
-const userRouter = require("./middleware/logControl.js")
+const session = require("express-session")
+const userRouter = require("./route/control.js")
 const { checkLogin } = require("./middleware/auth.js")
 const { users, roles, classes, carts, payments } = require("./models/dbSchema.js")
 const app = express()
@@ -16,7 +17,13 @@ app.engine(".hbs", exphbs.engine({
     helpers: {
         json: (context) => { return JSON.stringify(context) }
     }
-}));
+}))
+
+app.use(session({
+    secret: "the quick brown fox jumped over the lazy dog 1234567890",  // random string, used for configuring the session
+    resave: false,
+    saveUninitialized: true
+ })) 
 
 app.use(express.static(__dirname))
 app.use(express.urlencoded({ extended: true }))
@@ -139,7 +146,6 @@ app.get("/cart", checkLogin, async (req, res) => {
         }
     }
     else {
-        // res.render("message", { layout: "skeleton", login: false, msg:"Error", err:"Please Login to Process Payment"})
         res.render("cart", { layout: "skeleton", login: false, hasItem: false})
     }
 })
@@ -148,7 +154,7 @@ app.get("/admin", checkLogin, async (req,res)=>{
     if(req.email){
         const admin = await users.findOne({email: req.email}).lean()
         if(admin.role !== "admin"){
-            res.render("message", { layout: "skeleton", login: true, msg:"Error", err:"Authorization needed. Please login as admin user" })
+            res.render("message", { layout: "skeleton", login: true, msg:"Error", err:"Authorization needed. Please login as admin user", return: true })
         }
         else{
             const earning = await payments.aggregate([{$group: {_id: null, Amount: {$sum:"$total"}}}]) 
@@ -173,7 +179,7 @@ app.get("/admin", checkLogin, async (req,res)=>{
             
         }
     }else{
-        res.render("message", { layout: "skeleton", login: false, msg:"Error", err: "Authentication needed. Please login as admin user"})
+        res.render("message", { layout: "skeleton", login: false, msg:"Error", err: "Authentication needed. Please login as admin user", return: true})
     }
 })
 

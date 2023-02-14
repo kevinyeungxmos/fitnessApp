@@ -1,7 +1,6 @@
 * {
     margin-left: 0;
     margin-right: 0;
-    /* padding: 0; */
 }
 
 body {
@@ -11,45 +10,61 @@ body {
 body>header {
     background-color: rgb(0, 0, 0);
     color: rgba(81, 0, 85, 0.406);
+    width: 95%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-body>header>h1 {
+#logowrapper{
+    display: flex;
+    flex-direction: row;
+}
+
+#logo{
+    width:20%;
+    height: 90%;
+}
+
+body>header>div>h1 {
     font-family: 'Lobster', cursive;
     padding-left: 5px;
     color: white;
     letter-spacing: 2px;
+    transition: 0.3s ease-in-out;
 }
 
-body>header>h1:hover {
+body>header>div>h1:hover, #logo:hover {
     cursor: pointer;
+    color: rgb(118, 118, 118);
+
 }
 
-/* body > header > nav{
-    width: 20%;
-} */
+body > header > nav{
+    padding-left: 10px;
+    
+}
 
 body>header>nav>ul {
     font-family: 'Lora', serif;
     list-style: none;
     display: flex;
-    padding-left: 0;
     padding-top: 12px;
-    /* width: 100%; */
     justify-content: space-evenly;
 }
 
 body>header>nav>ul>li>a {
     color: white;
     text-decoration: none;
-    padding-right: 10px;
+    padding-right: 20px;
+    transition: 0.3s ease-in-out;
 }
 
 body>header>nav>ul>li>a:hover {
     cursor: pointer;
-    text-decoration: none;
+    color: rgb(118, 118, 118);
 }
 
 body>header>nav>ul>li>a:active {

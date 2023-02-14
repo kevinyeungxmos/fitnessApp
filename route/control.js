@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const mongoose = require("mongoose")
 const alert = require("alert")
-const { checkLogin } = require("./auth.js")
+const { checkLogin } = require("../middleware/auth.js")
 const { users, roles, classes, carts, payments } = require("../models/dbSchema.js")
 
 const router = Router()
@@ -20,43 +20,28 @@ router.get("/", (req, res) => {
 router.post("/signup", async (req, res) => {
     try {
         if (!valid(req.body.email)) {
-            res.render("message", { layout: "skeleton", err: "Invalid Email", msg: "Error" })
+            res.render("message", { layout: "skeleton", err: "Invalid Email", msg: "Error", return: true })
             return
         }
         await users.findOne({ email: req.body.email }).lean().exec().then(async (result, err) => {
             if (!result) {
                 if (req.body.password) {
-                    //validate email
-                    //create a empty doc for user
-                    // const doc = await carts.create({})
                     req.body.password = bcrypt.hashSync(req.body.password, 10)
                     const token = jwt.sign({ email: req.body.email }, "SECRET", { expiresIn: 3600 });
-                    // let new_user = await users.create({
-                    //     password: req.body.password,
-                    //     email: req.body.email,
-                    //     role: "user",
-                    //     token: token,
-                    //     cartid: doc._id
-                    // })
-                    // doc.buyerid = new_user._id
-                    // doc.buyerm = new_user.email
-                    // await doc.save()
-                    var user_detail = {
+                    let user_detail = {
                         password: req.body.password,
                         email: req.body.email,
                         role: "user",
                         token: token
                     }
-                    // res.cookie("token", token, {
-                    //     httpOnly: true,
-                    // })
-                    res.render("mpass", { layout: "skeleton", userDetail: user_detail })
+                    req.session.userDetail = user_detail
+                    res.render("mpass", { layout: "skeleton" })
                 } else {
-                    res.render("message", { layout: "skeleton", err: "Password is required", msg: "Error" })
+                    res.render("message", { layout: "skeleton", err: "Password is required", msg: "Error", return: true })
                 }
             }
             else {
-                res.render("message", { layout: "skeleton", err: "Eamil already exists", msg: "Error" })
+                res.render("message", { layout: "skeleton", err: "Eamil already exists", msg: "Error", return: true })
             }
         })
     } catch (error) {
@@ -68,7 +53,7 @@ router.post("/signup", async (req, res) => {
 router.post("/login", async (req, res) => {
     try {
         if (!valid(req.body.email)) {
-            res.render("message", { layout: "skeleton", err: "Invalid Email", msg: "Error" })
+            res.render("message", { layout: "skeleton", err: "Invalid Email", msg: "Error", return: true })
             return
         }
         // check if the user exists
@@ -86,10 +71,10 @@ router.post("/login", async (req, res) => {
                     })
                     res.redirect("/schedule")
                 } else {
-                    res.render("message", { layout: "skeleton", err: "Wrong Password", msg: "Error" })
+                    res.render("message", { layout: "skeleton", err: "Wrong Password", msg: "Error", return: true })
                 }
             } else {
-                res.render("message", { layout: "skeleton", err: "User doesn't exist", msg: "Error" })
+                res.render("message", { layout: "skeleton", err: "User doesn't exist", msg: "Error", return: true })
             }
         })
             .catch((err) => {
@@ -105,10 +90,10 @@ router.post("/monps", async (req, res) => {
     try {
         const doc = await carts.create({})
         let new_user = await users.create({
-            password: req.body.password,
-            email: req.body.email,
-            role: req.body.role,
-            token: req.body.token,
+            password: req.session.userDetail.password,
+            email: req.session.userDetail.email,
+            role: req.session.userDetail.role,
+            token: req.session.userDetail.token,
             cartid: doc._id,
             monPass: true
         })
@@ -121,7 +106,7 @@ router.post("/monps", async (req, res) => {
         //add 75$ to payments
         const paymentNum = (Math.random() * 100000000).toFixed(0)
         let a = await payments.create({
-            cxm: req.body.email,
+            cxm: req.session.userDetail.email,
             cxid: new_user._id,
             paidList: [{ item: "monthly plan" }],
             paymentNum: paymentNum,
@@ -138,10 +123,10 @@ router.post("/nomonpsignin", async(req, res) => {
     try {
         const doc = await carts.create({})
         let new_user = await users.create({
-            password: req.body.password,
-            email: req.body.email,
-            role: req.body.role,
-            token: req.body.token,
+            password: req.session.userDetail.password,
+            email:req.session.userDetail.email,
+            role: req.session.userDetail.role,
+            token: req.session.userDetail.token,
             cartid: doc._id,
             monPass: false
         })
@@ -159,7 +144,9 @@ router.post("/nomonpsignin", async(req, res) => {
 
 router.get("/logout", (req, res) => {
     res.clearCookie("token")
+    req.session.destroy()
     res.status(301).redirect("/")
+
 })
 
 router.post("/toCart", checkLogin, async (req, res) => {
@@ -177,7 +164,7 @@ router.post("/toCart", checkLogin, async (req, res) => {
                             res.redirect("/schedule")
                         }
                         else {
-                            res.render("message", { layout: "skeleton", login: true, err: "class not found", msg: "Error" })
+                            res.render("message", { layout: "skeleton", login: true, err: "class not found", msg: "Error", return: true })
                         }
                     })
                 }
@@ -186,7 +173,7 @@ router.post("/toCart", checkLogin, async (req, res) => {
         }
         else {
             //no one login do something
-            res.render("message", { layout: "skeleton", login: false, err: "You need to login before booking classes.", msg: "Error" })
+            res.render("message", { layout: "skeleton", login: false, err: "You need to login before booking classes.", msg: "Error", return: true })
         }
     } catch (error) {
         res.send(error)
@@ -218,10 +205,10 @@ router.post("/payment", checkLogin, async (req, res) => {
                 // clear shopping cart
                 ct.cart = []
                 await ct.save()
-                res.render("message", { layout: "skeleton", login: true, msg: ` Payment Success! Confirmation Number: ${paymentNum}` })
+                res.render("message", { layout: "skeleton", login: true, msg: ` Payment Success! Confirmation Number: ${paymentNum}`, return: false })
             }
             else {
-                res.render("message", { layout: "skeleton", login: true, msg: "Error: No Item in Shopping Cart" })
+                res.render("message", { layout: "skeleton", login: true, msg: "Error",  err: "No Item in Shopping Cart", return: true })
             }
 
         }
@@ -243,7 +230,7 @@ router.post("/sorting", checkLogin, async (req, res) => {
     if (req.email) {
         const admin = await users.findOne({ email: req.email }).lean()
         if (admin.role !== "admin") {
-            res.render("message", { layout: "skeleton", login: true, msg: "Error: Authorization needed. Please login as admin user" })
+            res.render("message", { layout: "skeleton", login: true, msg: "Error", err: "Authorization needed. Please login as admin user", return: true })
         }
         else {
             const earning = await payments.aggregate([{ $group: { _id: null, Amount: { $sum: "$total" } } }])
@@ -272,7 +259,7 @@ router.post("/sorting", checkLogin, async (req, res) => {
 
         }
     } else {
-        res.render("message", { layout: "skeleton", login: false, msg: "Error: Authentication needed. Please login as admin user" })
+        res.render("message", { layout: "skeleton", login: false, msg: "Error", err: "Authentication needed. Please login as admin user", return: true })
     }
 })
 

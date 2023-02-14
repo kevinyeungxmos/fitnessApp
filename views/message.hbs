@@ -2,6 +2,13 @@
 <div id="messageDiv">
     <h2>{{msg}}</h2>
     <p>{{err}}</p>
-    <a href="/" id="goToLoginButton">
-        < Return</a>
+    {{#if return}}
+        <button id="goBack" onclick="history.back()">
+            < Return</button>
+    {{else}}
+        <button id="goBack" onclick="returnHome()">
+            < Return</button>
+    {{/if}}
 </div>
+
+<script type="text/javascript" src="/js/skeleton.js"></script>
