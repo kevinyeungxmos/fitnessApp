@@ -20,7 +20,7 @@ router.get("/", (req, res) => {
 router.post("/signup", async (req, res) => {
     try {
         if (!valid(req.body.email)) {
-            res.render("message", { layout: "skeleton", err: "Invalid Email", msg: "Error" })
+            res.render("message", { layout: "skeleton", err: "Invalid Email", msg: "Error", return: true })
             return
         }
         await users.findOne({ email: req.body.email }).lean().exec().then(async (result, err) => {
@@ -37,11 +37,11 @@ router.post("/signup", async (req, res) => {
                     req.session.userDetail = user_detail
                     res.render("mpass", { layout: "skeleton" })
                 } else {
-                    res.render("message", { layout: "skeleton", err: "Password is required", msg: "Error" })
+                    res.render("message", { layout: "skeleton", err: "Password is required", msg: "Error", return: true })
                 }
             }
             else {
-                res.render("message", { layout: "skeleton", err: "Eamil already exists", msg: "Error" })
+                res.render("message", { layout: "skeleton", err: "Eamil already exists", msg: "Error", return: true })
             }
         })
     } catch (error) {
@@ -53,7 +53,7 @@ router.post("/signup", async (req, res) => {
 router.post("/login", async (req, res) => {
     try {
         if (!valid(req.body.email)) {
-            res.render("message", { layout: "skeleton", err: "Invalid Email", msg: "Error" })
+            res.render("message", { layout: "skeleton", err: "Invalid Email", msg: "Error", return: true })
             return
         }
         // check if the user exists
@@ -71,10 +71,10 @@ router.post("/login", async (req, res) => {
                     })
                     res.redirect("/schedule")
                 } else {
-                    res.render("message", { layout: "skeleton", err: "Wrong Password", msg: "Error" })
+                    res.render("message", { layout: "skeleton", err: "Wrong Password", msg: "Error", return: true })
                 }
             } else {
-                res.render("message", { layout: "skeleton", err: "User doesn't exist", msg: "Error" })
+                res.render("message", { layout: "skeleton", err: "User doesn't exist", msg: "Error", return: true })
             }
         })
             .catch((err) => {
@@ -164,7 +164,7 @@ router.post("/toCart", checkLogin, async (req, res) => {
                             res.redirect("/schedule")
                         }
                         else {
-                            res.render("message", { layout: "skeleton", login: true, err: "class not found", msg: "Error" })
+                            res.render("message", { layout: "skeleton", login: true, err: "class not found", msg: "Error", return: true })
                         }
                     })
                 }
@@ -173,7 +173,7 @@ router.post("/toCart", checkLogin, async (req, res) => {
         }
         else {
             //no one login do something
-            res.render("message", { layout: "skeleton", login: false, err: "You need to login before booking classes.", msg: "Error" })
+            res.render("message", { layout: "skeleton", login: false, err: "You need to login before booking classes.", msg: "Error", return: true })
         }
     } catch (error) {
         res.send(error)
@@ -205,10 +205,10 @@ router.post("/payment", checkLogin, async (req, res) => {
                 // clear shopping cart
                 ct.cart = []
                 await ct.save()
-                res.render("message", { layout: "skeleton", login: true, msg: ` Payment Success! Confirmation Number: ${paymentNum}` })
+                res.render("message", { layout: "skeleton", login: true, msg: ` Payment Success! Confirmation Number: ${paymentNum}`, return: false })
             }
             else {
-                res.render("message", { layout: "skeleton", login: true, msg: "Error: No Item in Shopping Cart" })
+                res.render("message", { layout: "skeleton", login: true, msg: "Error",  err: "No Item in Shopping Cart", return: true })
             }
 
         }
@@ -230,7 +230,7 @@ router.post("/sorting", checkLogin, async (req, res) => {
     if (req.email) {
         const admin = await users.findOne({ email: req.email }).lean()
         if (admin.role !== "admin") {
-            res.render("message", { layout: "skeleton", login: true, msg: "Error: Authorization needed. Please login as admin user" })
+            res.render("message", { layout: "skeleton", login: true, msg: "Error", err: "Authorization needed. Please login as admin user", return: true })
         }
         else {
             const earning = await payments.aggregate([{ $group: { _id: null, Amount: { $sum: "$total" } } }])
@@ -259,7 +259,7 @@ router.post("/sorting", checkLogin, async (req, res) => {
 
         }
     } else {
-        res.render("message", { layout: "skeleton", login: false, msg: "Error: Authentication needed. Please login as admin user" })
+        res.render("message", { layout: "skeleton", login: false, msg: "Error", err: "Authentication needed. Please login as admin user", return: true })
     }
 })
 
