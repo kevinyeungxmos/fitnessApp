@@ -26,6 +26,7 @@ router.post("/signup", async (req, res) => {
         await users.findOne({ email: req.body.email }).lean().exec().then(async (result, err) => {
             if (!result) {
                 if (req.body.password) {
+                    //encrypt the password
                     req.body.password = bcrypt.hashSync(req.body.password, 10)
                     const token = jwt.sign({ email: req.body.email }, "SECRET", { expiresIn: 3600 });
                     let user_detail = {
@@ -110,7 +111,7 @@ router.post("/monps", async (req, res) => {
             cxid: new_user._id,
             paidList: [{ item: "monthly plan" }],
             paymentNum: paymentNum,
-            total: 75
+            total: 84.75  //$75plus tax
         })
         res.redirect("/schedule")
 
@@ -119,12 +120,12 @@ router.post("/monps", async (req, res) => {
     }
 })
 
-router.post("/nomonpsignin", async(req, res) => {
+router.post("/nomonpsignin", async (req, res) => {
     try {
         const doc = await carts.create({})
         let new_user = await users.create({
             password: req.session.userDetail.password,
-            email:req.session.userDetail.email,
+            email: req.session.userDetail.email,
             role: req.session.userDetail.role,
             token: req.session.userDetail.token,
             cartid: doc._id,
@@ -208,7 +209,7 @@ router.post("/payment", checkLogin, async (req, res) => {
                 res.render("message", { layout: "skeleton", login: true, msg: ` Payment Success! Confirmation Number: ${paymentNum}`, return: false })
             }
             else {
-                res.render("message", { layout: "skeleton", login: true, msg: "Error",  err: "No Item in Shopping Cart", return: true })
+                res.render("message", { layout: "skeleton", login: true, msg: "Error", err: "No Item in Shopping Cart", return: true })
             }
 
         }
@@ -233,8 +234,14 @@ router.post("/sorting", checkLogin, async (req, res) => {
             res.render("message", { layout: "skeleton", login: true, msg: "Error", err: "Authorization needed. Please login as admin user", return: true })
         }
         else {
-            const earning = await payments.aggregate([{ $group: { _id: null, Amount: { $sum: "$total" } } }])
-            var sort = -1
+            const totalAmount = await payments.aggregate([{ $group: { _id: null, Amount: { $sum: "$total" } } }])
+            const earning = totalAmount[0].Amount / 1.13
+            const tax = earning * 0.13
+            let sort = -1
+            if (req.body.sort === "") {
+                res.status(204).send()
+                return
+            }
             if (req.body.sort === "Ascending") {
                 sort = 1
             }
@@ -255,8 +262,8 @@ router.post("/sorting", checkLogin, async (req, res) => {
                     class: cl
                 })
             }
-            res.render("admin", { layout: "skeleton", login: true, allList: listOfReceipt, earning: earning[0].Amount })
-
+            res.render("admin", { layout: "skeleton", login: true, allList: listOfReceipt, totalAmount: (totalAmount[0].Amount.toFixed(2)), 
+                tax: tax.toFixed(2), earning: earning.toFixed(2) })
         }
     } else {
         res.render("message", { layout: "skeleton", login: false, msg: "Error", err: "Authentication needed. Please login as admin user", return: true })

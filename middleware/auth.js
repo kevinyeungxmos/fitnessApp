@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 
+//middleware to check the authentication
 const checkLogin = (req, res, next) => {
     const token = req.cookies.token
     if (!token) {
@@ -21,5 +22,5 @@ const checkLogin = (req, res, next) => {
 
 // export custom middleware
 module.exports = {
-    checkLogin,
+    checkLogin
 }

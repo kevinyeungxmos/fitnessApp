@@ -4,6 +4,7 @@
 <form action="/user/sorting" method="post">
     <label for="sorting">Sorting by Email:</label>
     <select id="sort" name="sort">
+        <option value=""></option>
         <option value="Ascending">Ascending</option>
         <option value="descending">Descending</option>
     </select>
@@ -11,6 +12,8 @@
 </form>
 {{>transactions}}
 <p>-----------------------------------------------------------------------------------------------------------</p>
-<p>Earned: ${{this.earning}} </p>
+<p>Total Amount: ${{this.totalAmount}} </p>
+<p>Tax:          ${{this.tax}} </p>
+<p>Earning:      ${{this.earning}} </p>
 <p>-----------------------------------------------------------------------------------------------------------</p>
 </section>
