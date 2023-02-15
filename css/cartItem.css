@@ -1,6 +1,5 @@
 #cartItemDiv {
     display: flex;
-    /* border: 3px solid pink; */
     justify-content: space-between;
     margin-top:10px;
     border-radius: 15px;
@@ -16,10 +15,6 @@
     padding-left: 10px;
     color: black;
 }
-
-/* #cartItemButton {
-    border: 1px solid blue;
-} */
 
 #blnpf {
     width: 100px;

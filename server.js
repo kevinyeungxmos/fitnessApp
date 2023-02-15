@@ -20,7 +20,7 @@ app.engine(".hbs", exphbs.engine({
 }))
 
 app.use(session({
-    secret: "the quick brown fox jumped over the lazy dog 1234567890",  // random string, used for configuring the session
+    secret: "welcome to 247 fitness",  // random string, used for configuring the session
     resave: false,
     saveUninitialized: true
 }))
@@ -48,39 +48,20 @@ async function getClass() {
     }
     return classList
 }
-
-async function createAdmin() {
-    const res = await users.findOne({ email: "247@247.com" })
-    if (!res) {
-        //create a empty doc for user
-        const doc = await carts.create({})
-        const pw = bcrypt.hashSync("admin", 10)
-        const token = jwt.sign({ email: "247@247.com" }, "SECRET", { expiresIn: 3600 });
-        let admin = await users.create({
-            password: pw,
-            email: "247@247.com",
-            role: "admin",
-            token: token,
-            cartid: doc._id
-        }).catch(err => {
-            console.log(err)
-        })
-        doc.buyerid = admin._id
-        doc.buyerm = admin.email
-        await doc.save()
-    }
-}
-
-//use db aggregation to calculate
+//use db aggregation to calculate the price need to bay by customer
 async function CountAmount(email) {
+    //find by email and unwind the cart
     const result = await carts.aggregate([{ $match: { buyerm: email } }, { $unwind: "$cart" }, {
+        // and then use lookup to link cart.itemid and set the cart.itemid as bookedClass
         $lookup: {
             from: "classes",
             localField: "cart.itemid",
             foreignField: "_id",
             as: "bookedClass"
         }
+        //project cart and buyerm then unwind cart.itemid 
     }, { $set: { "cart.itemid": "$bookedClass" } }, { $project: { cart: 1, buyerm: 1 } }, { $unwind: "$cart.itemid" },
+    //then multiply the price and duration to get the actucl price and sum all together to obtain the total amount.
     { $group: { _id: "$buyerm", amount: { $sum: { $multiply: ["$cart.itemid.price", "$cart.itemid.duration"] } }, count: { $sum: 1 } } }])
 
     const subTotal = result[0].amount
@@ -100,6 +81,7 @@ async function CountAmount(email) {
 
 //-----------------------------------------------------
 
+//handle home page
 app.get("/", checkLogin, (req, res) => {
     if (req.email) {
         res.render("home", { layout: "skeleton", login: true })
@@ -109,6 +91,7 @@ app.get("/", checkLogin, (req, res) => {
     }
 })
 
+//handle course schedule page
 app.get("/schedule", checkLogin, async (req, res) => {
     const classList = await getClass()
     if (req.email) {
@@ -119,6 +102,7 @@ app.get("/schedule", checkLogin, async (req, res) => {
     }
 })
 
+//handle cart page
 app.get("/cart", checkLogin, async (req, res) => {
 
     if (req.email) {
@@ -162,6 +146,7 @@ app.get("/cart", checkLogin, async (req, res) => {
     }
 })
 
+//handle admin page 
 app.get("/admin", checkLogin, async (req, res) => {
     if (req.email) {
         const admin = await users.findOne({ email: req.email }).lean()
@@ -171,7 +156,9 @@ app.get("/admin", checkLogin, async (req, res) => {
         else {
             const pays = await payments.find({})
             if (pays.length > 0) {
-                const earning = await payments.aggregate([{ $group: { _id: null, Amount: { $sum: "$total" } } }])
+                const totalAmount = await payments.aggregate([{ $group: { _id: null, Amount: { $sum: "$total" } } }])
+                const earning = totalAmount[0].Amount/1.13
+                const tax = earning*0.13
                 var allReceipt = await payments.aggregate([{ $match: { _id: { $exists: true } } }])
                 var listOfReceipt = []
                 for (const i of allReceipt) {
@@ -189,7 +176,8 @@ app.get("/admin", checkLogin, async (req, res) => {
                         class: cl
                     })
                 }
-                res.render("admin", { layout: "skeleton", login: true, allList: listOfReceipt, earning: (earning[0].Amount.toFixed(2)) })
+                res.render("admin", { layout: "skeleton", login: true, allList: listOfReceipt, totalAmount: (totalAmount[0].Amount.toFixed(2)), 
+                tax: tax.toFixed(2), earning: earning.toFixed(2) })
             }
             else{
                 res.render("message", { layout: "skeleton", login: true, msg: "Message", err: "No Payment", return: true })
@@ -200,6 +188,7 @@ app.get("/admin", checkLogin, async (req, res) => {
     }
 })
 
+//router for /user/xxx
 app.use("/user", userRouter)
 
 const onHttpStart = () => {
