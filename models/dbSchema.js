@@ -100,7 +100,7 @@ const cartSchema = mongoose.Schema({
     }]
 })
 
-// export model user with UserSchema
+// export model user with all Schema
 users = mongoose.model("users", userSchema)
 roles = mongoose.model("roles", roleSchema)
 classes = mongoose.model("classes", classSchema)
